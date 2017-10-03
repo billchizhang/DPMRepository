@@ -5,11 +5,13 @@ import lejos.robotics.SampleProvider;
 public class sensorPoller extends Thread {
 	
 	  private SampleProvider us;
+	  private usController cont;
 	  private float[] usData;
 	  public int distance; 
 
-	  public sensorPoller(SampleProvider us, float[] usData) {
+	  public sensorPoller(SampleProvider us, float[] usData, usController cont) {
 	    this.us = us;
+	    this.cont = cont;
 	    this.usData = usData;
 	  }
 
@@ -24,7 +26,7 @@ public class sensorPoller extends Thread {
 	    while (true) {
 	      us.fetchSample(usData, 0); // acquire data
 	      distance = (int) (usData[0] * 100.0); // extract from buffer, cast to int
-	      Navigation.processUSData((int)(distance/Math.sqrt(2))); // now take action depending on value
+	      cont.processUSData((int)(distance/Math.sqrt(2))); // now take action depending on value
 	      try {
 	        Thread.sleep(50);
 	      } catch (Exception e) {
@@ -32,8 +34,8 @@ public class sensorPoller extends Thread {
 	    }
 	  }
 	  
-	  public int getDistance() {
-		  return this.distance; 
+	  public void exit() {
+		  System.exit(0);
 	  }
 
 }

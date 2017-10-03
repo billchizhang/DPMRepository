@@ -55,7 +55,7 @@ public class usController {
 	    		//when getting close to an obstacle, turn the sensor to 45 degree
 	    		//prepare for performing wall following 
 	    		NavigationLab.sMotor.setSpeed(ROTATE_SPEED);
-	    		NavigationLab.sMotor.rotate(-45); 
+	    		NavigationLab.sMotor.rotate(45); 
 	    }
 	    //the brick is too close to the wall, turn left
 	    else if(error < 0) {
@@ -67,16 +67,14 @@ public class usController {
 	    	
 	    } 
 	    //the brick is too far away from the wall 
-	   /* else if (error > 0) {
+	    else if (error > 0) {
 	    		adjust = calcProp(error); 
 	    		NavigationLab.leftMotor.setSpeed(MOTOR_SPEED - adjust);
 	    		NavigationLab.rightMotor.setSpeed(MOTOR_SPEED + adjust);
 	    		NavigationLab.leftMotor.forward();
 	    		NavigationLab.rightMotor.forward();
-	    }*/
-	    if(error > 20) {
-	    		System.exit(0);
 	    }
+	    
 	    
 	  }
 	  

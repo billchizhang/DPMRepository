@@ -25,7 +25,7 @@ public class NavigationLab {
 		  public static final EV3LargeRegulatedMotor sMotor = 
 			  new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C")); 
 		  
-		
+		  private static final Port usPort = LocalEV3.get().getPort("S1");
 
 		  public static final double WHEEL_RADIUS = 2.2;
 		  public static final double TRACK = 14.3;
@@ -40,7 +40,13 @@ public class NavigationLab {
 		    OdometryDisplay odometryDisplay = new OdometryDisplay(odometer, t);
 		    final OdometryCorrection odometryCorrection = new OdometryCorrection(odometer);
 		    final Navigation navigation = new Navigation(odometer); 
-		   
+		    @SuppressWarnings("resource")
+			SensorModes usSensor = new EV3UltrasonicSensor(usPort); // usSensor is the instance
+		    SampleProvider usDistance = usSensor.getMode("Distance"); // usDistance provides samples from
+		                                                              // this instance
+		    float[] usData = new float[usDistance.sampleSize()]; 
+		    
+		    usController usController = new usController(bandCenter, bandWidth);
 
 		    do {
 		      // clear the display
@@ -82,31 +88,40 @@ public class NavigationLab {
 		      odometer.start();
 		      odometryDisplay.start();
 		      odometryCorrection.start(); 
-		      
-		      (new Thread() {
-	    	  		public void run() {
-	    	  			navigation.drive(); 
-	    	  		}
-		      }).start(); 
+                (new Thread() {
+                    public void run() {
+                        navigation.drive();
+                    }
+                }).start();
+            }
 		      
 		      
 		      if(buttonChoice == Button.ID_RIGHT){
-		    	  
-		    	  	(new Thread() {
-		    	  		public void run() {
-		    	  			navigation.drive();
-		    	  		}
-		    	  	}).start(); 
-		    	  
+		    	  	 sensorPoller sensorpoller = new sensorPoller(usDistance, usData, usController); 
 		    	  	 
-		    	  
 		    	  	 
-		    	  	 }
-		
+                  
+                  while(navigation.isNavigating() == true){
+                      if(sensorpoller.distance <= 30){
+                          Thread.sleep(5000);
+                          sensorpoller.start();
+                          navigation.isNavigating = false;
+                      }
+                      
+                  }
+                  while(navigation.isNavigating() == false){
+                      if(sensorpoller.distance > 50){
+                          sensorpoller.exit();
+                      }
+                  }
+		    	   	
+		       
+		       
+		        
+		      }
 		      
 		      // spawn a new Thread to avoid SquareDriver.drive() from blocking
 		      
-		    }
 
 		    while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		    System.exit(0);
