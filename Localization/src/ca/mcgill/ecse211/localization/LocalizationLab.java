@@ -41,7 +41,8 @@ public class LocalizationLab {
 	                                                              // this instance
 	    float[] usData = new float[usDistance.sampleSize()]; 
 	    UltrasonicLocalizer uslocalizer = new UltrasonicLocalizer(odometer, false, usDistance, usData); 
-	    UltrasonicLocalizer uslocalizerR = new UltrasonicLocalizer(odometer, true, usDistance, usData); 
+	    UltrasonicLocalizer uslocalizerR = new UltrasonicLocalizer(odometer, true, usDistance, usData);
+	    LightLocalizer ltlocalizer = new LightLocalizer(odometer, navigation); 
 	    
 	     
 	    
@@ -65,6 +66,7 @@ public class LocalizationLab {
 
 	      odometer.start();
 	      odometryDisplay.start();
+	      ltlocalizer.localizer();
 
 	    } else {
 	      // clear the display

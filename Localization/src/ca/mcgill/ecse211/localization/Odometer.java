@@ -19,7 +19,7 @@ public class Odometer extends Thread {
   
   //My constants:
   private final double wheelRadius = 2.2; //measured in cm
-  private final double wheelBandRadius = 14.3;
+  private final double wheelBandRadius = 13.0;
   private int updatedLeftMotorTachoCount;
   private int updatedRightMotorTachoCount;
   

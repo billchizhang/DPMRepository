@@ -7,7 +7,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class Navigation {
 	  //Constants 
 	  private static final int FORWARD_SPEED = 250;
-	  private static final int ROTATE_SPEED = 150;
+	  private static final int ROTATE_SPEED = 50;
 	  private static final double tile = 30.48; 
 	  private static final double leftRadius = 2.2; 
 	  private static final double rightRadius = 2.2; 

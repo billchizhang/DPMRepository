@@ -12,7 +12,7 @@ public class LightLocalizer {
 	private static int R_SPEED = 100; 
 	private static int FWD_SPEED = 100; 
 	//the distance between light sensor and the center of rotation 
-	private static double sensorOffset = 10; 
+	private static double sensorOffset = 19.5; 
 	private static double tile = 30.48; 
 	private Odometer odometer; 
 	private Navigation navigator; 
@@ -36,6 +36,7 @@ public class LightLocalizer {
 	  private static float[] sampleColor = new float[lsSample.sampleSize()];
 	  
 	  
+	  
 	  public LightLocalizer(Odometer odometer, Navigation navigator) {
 		  this.odometer = odometer; 
 		  this.navigator = navigator; 
@@ -48,41 +49,33 @@ public class LightLocalizer {
 	      colorValue = sampleColor[0] * 1000; 
 	      
 		  //Go to the origin first 
-	      navigator.turnTo(90);
-	      
-	      while (numCrossed < 1) {
-	    	  	crossed = false; 
-	    	  	drive(); 
+	      navigator.turnTo(-145);
+	      boolean rolling = true; 
+	      navigator.roll(1.5);
+	      while(rolling) {
+	    	  	if(colorValue <= (colorBlack + threshold)) {
+	    	  		crossed = true; 
+	    	  		Sound.beep(); 
+	    	  		numCrossed++; 
+	    	  		LocalizationLab.leftMotor.stop(); 
+	    	  		LocalizationLab.rightMotor.stop(); 
+	    	  		rolling = false; 
+	    	  	}
+	    	  	
 	      }
-	      //go back when detecting a black line
-	      navigator.roll(-sensorOffset/tile); 
-	      //turn 90 degrees 
-	      navigator.turnTo(90);
 	      
-	      while(numCrossed < 2) {
-	    	  	crossed = false; 
-	    	  	drive(); 
-	      }
-	      
-	      navigator.roll(-sensorOffset/tile); 
-	      try {
-			LocalizationLab.leftMotor.wait(1000);
-		} catch (InterruptedException e1) {
-			
-		}
-	      try {
-			LocalizationLab.rightMotor.wait(1000);
-		} catch (InterruptedException e1) {
-			
-		}
-	      
+	      LocalizationLab.leftMotor.setSpeed(FWD_SPEED);
+	  	  LocalizationLab.rightMotor.setSpeed(FWD_SPEED);
+	  	  navigator.roll(-sensorOffset/tile);
+	  	  	
+	   
 	      //light localization starts 
 	     
 	      double [] angle = new double[4]; 
 	      //when rotating 360 degrees (4 lines detected) 
 	      while(lineCounter < 4) {
 	    	  	//when detecting a line
-	    	  	navigator.turnTo(100);
+	    	  	navigator.turnTo(90);
 	    	  	if(colorValue <= (colorBlack + threshold)) {
 	    	  		//sound the beep and increment line counter
 	    	  		Sound.beep();
@@ -91,7 +84,7 @@ public class LightLocalizer {
 	    	  		LocalizationLab.rightMotor.stop();
 	    		    LocalizationLab.leftMotor.stop();
 	    	  		//record the angle when detecting the line 
-	    	  		angle[lineCounter] = odometer.getTheta(); 
+	    	  		angle[(lineCounter-1)] = odometer.getTheta(); 
 	    	  		//sleep for 1 seconds 
 	    	  		try {
 						Thread.sleep(1000);
@@ -110,11 +103,11 @@ public class LightLocalizer {
 	      double thetaY = angle[3] - angle[1]; 
 	      
 	      //calculate x and y value 
-	      double x = -sensorOffset*Math.cos(Math.toRadians(thetaY)); 
-	      double y = -sensorOffset*Math.cos(Math.toRadians(thetaX)); 
+	      double x = -sensorOffset*Math.cos(Math.toRadians(thetaY/2)); 
+	      double y = -sensorOffset*Math.cos(Math.toRadians(thetaX/2)); 
 	      
 	      //calculate current heading 
-	      double theta = 180 - angle[0]; 
+	      double theta = 276 - (3*thetaY)/2; 
 	      theta = theta + odometer.getTheta(); 
 	      
 	      //update the odometer
@@ -122,33 +115,13 @@ public class LightLocalizer {
 	      odometer.setY(y);
 	      odometer.setTheta(theta);
 	      
-	      //travel to the origin
-	      navigator.travelTo(0, 0);
+	      
 	      double heading = odometer.getTheta(); 
 	      //adjust the heading to 0 degree 
 	      navigator.turnTo(-heading);
 	  }
 	  
-	  private void drive() {
-		  if(colorValue <= (colorBlack + threshold)) {
-	          crossed = true; 
-	          Sound.beep(); 
-	          numCrossed++; 
-	      		}
-	      
-	      	if(crossed = false) {
-	    	  	  	LocalizationLab.leftMotor.setSpeed(FWD_SPEED);
-	    	  	  	LocalizationLab.rightMotor.setSpeed(FWD_SPEED);
-		      
-	    	  	  	LocalizationLab.leftMotor.forward();
-	    	  	  	LocalizationLab.rightMotor.forward();
-	      	}
-	      
-	      	if(crossed = true) {
-	    	  	 	LocalizationLab.leftMotor.stop();
-	    	  	 	LocalizationLab.rightMotor.stop(); 
-	      	}
-	  }
+	  
 	  
 	  
 	  
