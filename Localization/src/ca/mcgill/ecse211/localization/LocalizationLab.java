@@ -40,7 +40,9 @@ public class LocalizationLab {
 	    SampleProvider usDistance = usSensor.getMode("Distance"); // usDistance provides samples from
 	                                                              // this instance
 	    float[] usData = new float[usDistance.sampleSize()]; 
+	    //the ultrasonic localizer for falling edge
 	    UltrasonicLocalizer uslocalizer = new UltrasonicLocalizer(odometer, false, usDistance, usData); 
+	    //the ultrasonic localizer for rising edge 
 	    UltrasonicLocalizer uslocalizerR = new UltrasonicLocalizer(odometer, true, usDistance, usData);
 	    LightLocalizer ltlocalizer = new LightLocalizer(odometer, navigation); 
 	    
@@ -90,7 +92,7 @@ public class LocalizationLab {
 	     
 	      
 	      if(buttonChoice == Button.ID_LEFT){
-	    	  	 
+	    	  	
 	    	  	uslocalizerR.localize();
 	    	  	
 	    	   	

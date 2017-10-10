@@ -24,6 +24,7 @@ public class LightLocalizer {
 	private static float threshold = 10; 
 	private static boolean crossed; 
 	private static int numCrossed = 0; 
+	//record the number of lines crossed 
 	private static int lineCounter = 0; 
 	
 	//allocate ports for the light sensor
@@ -49,9 +50,11 @@ public class LightLocalizer {
 	      colorValue = sampleColor[0] * 1000; 
 	      
 		  //Go to the origin first 
+	      //drive along the diagonal 
 	      navigator.turnTo(-145);
 	      boolean rolling = true; 
 	      navigator.roll(1.5);
+	      //when crossing a black line, stop the robot 
 	      while(rolling) {
 	    	  	if(colorValue <= (colorBlack + threshold)) {
 	    	  		crossed = true; 
@@ -63,11 +66,17 @@ public class LightLocalizer {
 	    	  	}
 	    	  	
 	      }
-	      
+	      //the sensor is in the back, backwards for the sensor distance 
 	      LocalizationLab.leftMotor.setSpeed(FWD_SPEED);
 	  	  LocalizationLab.rightMotor.setSpeed(FWD_SPEED);
 	  	  navigator.roll(-sensorOffset/tile);
-	  	  	
+	  	  //sleep for 10 second for the measurement 
+	  	  try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e1) {
+		
+			e1.printStackTrace();
+		}
 	   
 	      //light localization starts 
 	     
