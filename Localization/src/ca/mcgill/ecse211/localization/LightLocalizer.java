@@ -51,9 +51,9 @@ public class LightLocalizer {
 	      
 		  //Go to the origin first 
 	      //drive along the diagonal 
-	      navigator.turnTo(-145);
+	      navigator.turnTo(-142);
 	      boolean rolling = true; 
-	      navigator.roll(1.5);
+	      navigator.roll(1.7);
 	      //when crossing a black line, stop the robot 
 	      while(rolling) {
 	    	  	if(colorValue <= (colorBlack + threshold)) {
@@ -69,7 +69,7 @@ public class LightLocalizer {
 	      //the sensor is in the back, backwards for the sensor distance 
 	      LocalizationLab.leftMotor.setSpeed(FWD_SPEED);
 	  	  LocalizationLab.rightMotor.setSpeed(FWD_SPEED);
-	  	  navigator.roll(-sensorOffset/tile);
+	  	  navigator.roll(-(sensorOffset*1.2)/tile);
 	  	  //sleep for 10 second for the measurement 
 	  	  try {
 			Thread.sleep(10000);

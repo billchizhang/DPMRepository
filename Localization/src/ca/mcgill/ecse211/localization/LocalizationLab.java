@@ -68,7 +68,7 @@ public class LocalizationLab {
 
 	      odometer.start();
 	      odometryDisplay.start();
-	      ltlocalizer.localizer();
+	      //ltlocalizer.localizer();
 
 	    } else {
 	      // clear the display
@@ -98,6 +98,8 @@ public class LocalizationLab {
 	    	   	
 	       
 	      }
+	      
+	      ltlocalizer.localizer();
 	     
 	    }
 
